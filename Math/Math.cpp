@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-//!< 同階層にglm(https://github.com/g-truc/glm)が必要 (Need glm(https://github.com/g-truc/glm) on same hierarchy)
+//!< 再帰的にクローンすること、glmはサブモジュールとして追加してある (Clone recursive, glm is added as submodule)
 #define USE_GLM
 
 #ifdef USE_GLM
