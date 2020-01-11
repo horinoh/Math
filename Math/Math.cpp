@@ -3,6 +3,10 @@
 
 #include <iostream>
 
+//!< “¯ŠK‘w‚Églm(https://github.com/g-truc/glm)‚ª•K—v (Need glm(https://github.com/g-truc/glm) on same hierarchy)
+#define USE_GLM
+
+#ifdef USE_GLM
 #pragma region GLM
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -23,6 +27,7 @@ static std::ostream& operator<<(std::ostream& rhs, const glm::mat2& Value) { for
 static std::ostream& operator<<(std::ostream& rhs, const glm::mat3& Value) { for (auto i = 0; i < 3; ++i) { rhs << Value[i]; } rhs << std::endl; return rhs; }
 static std::ostream& operator<<(std::ostream& rhs, const glm::mat4& Value) { for (auto i = 0; i < 4; ++i) { rhs << Value[i]; } rhs << std::endl; return rhs; }
 #pragma endregion //!< GLM
+#endif //!< USE_GLM
 
 #pragma region DXMATH
 #include <DirectXMath.h>
@@ -33,6 +38,7 @@ static std::ostream& operator<<(std::ostream& rhs, const DirectX::XMMATRIX& Valu
 //!< glm, DirectXMath‚ÌŒŸØ—p (Verify glm and DirectXMath)
 int main()
 {
+#ifdef USE_GLM
 #pragma region GLM
 	const auto gA3 = glm::vec3(1.0f, 2.0f, 3.0f);
 	const auto gB3 = glm::vec3(3.0f, 7.0f, 1.0f);
@@ -41,6 +47,7 @@ int main()
 	const auto gA44 = glm::mat4(1.0f);
 	std::cout << gA44 << std::endl;
 #pragma endregion //!< GLM
+#endif //!< USE_GLM
 
 #pragma region DXMATH
 	const auto dA3 = DirectX::XMVectorSet(1.0f, 2.0f, 3.0f, 0.0f);
