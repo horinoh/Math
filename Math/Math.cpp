@@ -40,25 +40,157 @@ int main()
 {
 #ifdef USE_GLM
 #pragma region GLM
-	const auto gA3 = glm::vec3(1.0f, 2.0f, 3.0f);
-	const auto gB3 = glm::vec3(3.0f, 7.0f, 1.0f);
-	std::cout << gA3 + gB3 << std::endl;
+	{
+		std::cout << "---- glm ----" << std::endl << std::endl;
 
-	const auto gA44 = glm::mat4(1.0f);
-	std::cout << gA44 << std::endl;
+		//!< ベクタ (Vector)
+		std::cout << "[Vector3]" << std::endl;
+		const auto A3 = glm::vec3(1.0f, 2.0f, 3.0f);
+		const auto B3 = glm::vec3(4.0f, 5.0f, 6.0f);
+		std::cout << "A3 = " << A3 << std::endl;
+		std::cout << "B3 = " << B3 << std::endl;
+		std::cout << "A3 + B3 = " << B3 + A3 << std::endl;
+		std::cout << "dot(A3, B3) = " << glm::dot(A3, B3) << std::endl;
+		std::cout << "cross(A3, B3) = " << glm::cross(A3, B3) << std::endl;
+
+		//!< クォータニオン (Quaternion)
+		std::cout << "[Quaternion]" << std::endl;
+
+		//!< マトリクス (Matrix) ... 乗算の順序がDirectXMathとは逆になる(Multiply order is different from DirectXMath)
+		//!< 22
+		std::cout << "[Matrix22]" << std::endl;
+		const auto A22 = glm::mat2(1.0f, -1.0f, -2.0f, 3.0f);
+		const auto B22 = glm::mat2(1.0f, 2.0f, 3.0f, 4.0f);
+		std::cout << "A22 = " << A22 << std::endl;
+		std::cout << "B22 = " << B22 << std::endl;
+		std::cout << "A22 * B22 = " << A22 * B22 << std::endl;
+		std::cout << "B22 * A22 = " << B22 * A22 << std::endl;
+		std::cout << "determinant(A22) = " << glm::determinant(A22) << std::endl;
+		const auto InvA22 = glm::inverse(A22);
+		std::cout << "inverse(A22) = " << InvA22;
+		std::cout << "inverse(A22) * A22 = " << InvA22 * A22;
+
+		//!< 33
+		std::cout << "[Matrix33]" << std::endl;
+		const auto A33 = glm::mat3(3.0f, -2.0f, 7.0f,
+			-5.0f, 1.0f, 4.0f,
+			2.0f, -3.0f, -1.0f);
+		const auto B33 = glm::mat3(-4.0f, 2.0f, 5.0f, 
+			3.0f, -2.0f, 1.0f,
+			6.0f, -3.0f, -1.0f);
+		std::cout << "A33 = " << A33 << std::endl;
+		std::cout << "B33 = " << B33 << std::endl;
+		std::cout << "A33 * B33 = " << A33 * B33 << std::endl;
+		std::cout << "B33 * A33 = " << B33 * A33 << std::endl;
+		const auto C33 = glm::mat3(1.0f, 1.0f, -1.0f,
+			-2.0f, -1.0f, 1.0f,
+			-1.0f, -2.0f, 1.0f);
+		std::cout << "C33 = " << C33 << std::endl;
+		std::cout << "determinant(C33) = " << glm::determinant(C33) << std::endl;
+		const auto InvC33 = glm::inverse(C33);
+		std::cout << "inverse(C33) = " << InvC33;
+		std::cout << "inverse(C33) * C33 = " << InvC33 * C33;
+
+		//!< 44
+		std::cout << "[Matrix44]" << std::endl;
+		std::cout << "identity = " << glm::mat4(1.0f) << std::endl;
+		const auto A44 = glm::mat4(1.0f, 0.0f, 1.0f, 2.0f,
+			-1.0f, 1.0f, 1.0f, 1.0f,
+			1.0f, -1.0f, 0.0f, 1.0f,
+			1.0f, 1.0f, -1.0f, -2.0f);
+		std::cout << "A44 = " << A44;
+		std::cout << "transpose(A44) = " << glm::transpose(A44);
+		std::cout << "determinant(A44) = " << glm::determinant(A44) << std::endl;
+		const auto InvB44 = glm::inverse(A44);
+		std::cout << "inverse(A44) = " << InvB44;
+		std::cout << "inverse(A44) * A4 = " << InvB44 * A44;
+
+	}
 #pragma endregion //!< GLM
 #endif //!< USE_GLM
 
 #pragma region DXMATH
-	const auto dA3 = DirectX::XMVectorSet(1.0f, 2.0f, 3.0f, 0.0f);
-	const auto dB3 = DirectX::XMVectorSet(3.0f, 7.0f, 1.0f, 0.0f);
-	std::cout << DirectX::XMVectorAdd(dA3, dB3) << std::endl;
+	{
+		std::cout << "---- DirectXMath ----" << std::endl << std::endl;
 
-	const auto dA44 = DirectX::XMMatrixIdentity();
-	std::cout << dA44 << std::endl;
+		//!< ベクタ (Vector)
+		std::cout << "[Vector3]" << std::endl;
+		const auto A3 = DirectX::XMVectorSet(1.0f, 2.0f, 3.0f, 0.0f);
+		const auto B3 = DirectX::XMVectorSet(4.0f, 5.0f, 6.0f, 0.0f);
+		std::cout << "A3 = " << A3 << std::endl;
+		std::cout << "B3 = " << B3 << std::endl;
+		std::cout << "A3 + B3 = " << DirectX::XMVectorAdd(A3, B3) << std::endl; //!< 加算オペレーターは無い？ (There is no + operator?)
+		std::cout << "XMVector3Dot(A3, B) = " << DirectX::XMVector3Dot(A3, B3).m128_f32[0] << std::endl;
+		std::cout << "XMVector3Cross(A3, B3) = " << DirectX::XMVector3Cross(A3, B3) << std::endl;
+
+		//!< クォータニオン (Quaternion)
+		std::cout << "[Quaternion]" << std::endl;
+
+		//!< マトリクス (Matrix) ... 乗算の順序がglmとは逆になる(Multiply order is different from glm)
+		//!< 22
+		std::cout << "[Matrix22]" << std::endl;
+		const auto A22 = DirectX::XMMATRIX(1.0f, -1.0f, 0.0f, 0.0f,
+			-2.0f, 3.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 0.0f);
+		const auto B22 = DirectX::XMMATRIX(1.0f, 2.0f, 0.0f, 0.0f,
+			3.0f, 4.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 0.0f);
+		std::cout << "A22 = " << A22 << std::endl;
+		std::cout << "B22 = " << B22 << std::endl;
+		std::cout << "A22 * B22 = " << A22 * B22 << std::endl;
+		//std::cout << "XMMatrixMultiply(A22, B22) = " << DirectX::XMMatrixMultiply(A22, B22) << std::endl;
+		std::cout << "B22 * A22 = " << B22 * A22 << std::endl;
+		//!< 行列式、逆行列は4x4版しか用意されてない？ (Is there no determinant and inverse but 4x4?)
+		//auto A22Det = DirectX::XMMatrixDeterminant(A22);
+		//std::cout << "XMMatrixDeterminant(A22) =" << A22Det.m128_f32[0] << std::endl;
+		//const auto InvA22 = DirectX::XMMatrixInverse(&A22Det, A22);
+		//std::cout << "XMMatrixInverse(A22) = " << InvA22;
+		//std::cout << "A22 * XMMatrixInverse(A22) = " << A22 * InvA22;
+
+		//!< 33
+		std::cout << "[Matrix33]" << std::endl;
+		const auto A33 = DirectX::XMMATRIX(3.0f, -2.0f, 7.0f, 0.0f,
+			-5.0f, 1.0f, 4.0f, 0.0f,
+			2.0f, -3.0f, -1.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 0.0f);
+		const auto B33 = DirectX::XMMATRIX(-4.0f, 2.0f, 5.0f, 0.0f,
+			3.0f, -2.0f, 1.0f, 0.0f,
+			6.0f, -3.0f, -1.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 0.0f);
+		std::cout << "A33 = " << A33 << std::endl;
+		std::cout << "B33 = " << B33 << std::endl;
+		std::cout << "A33 * B33 = " << A33 * B33 << std::endl;
+		std::cout << "B33 * A33 = " << B33 * A33 << std::endl;
+		//!< 行列式、逆行列は4x4版しか用意されてない？ (Is there no determinant and inverse but 4x4?)
+		//const auto C33 = DirectX::XMMATRIX(1.0f, 1.0f, -1.0f, 0.0f,
+		//	-2.0f, -1.0f, 1.0f, 0.0f,
+		//	-1.0f, -2.0f, 1.0f, 0.0f,
+		//	0.0f, 0.0f, 0.0f, 0.0f);
+		//std::cout << "C33 = " << C33 << std::endl;
+		//auto C33Det = DirectX::XMMatrixDeterminant(C33);
+		//std::cout << "XMMatrixDeterminant(C33) =" << C33Det.m128_f32[0] << std::endl;
+		//const auto InvC33 = DirectX::XMMatrixInverse(&C33Det, C33);
+		//std::cout << "XMMatrixInverse(C33) = " << InvC33;
+		//std::cout << "C33 * XMMatrixInverse(C33) = " << C33 * InvC33;
+
+		//!< 44
+		std::cout << "[Matrix44]" << std::endl;
+		std::cout << "XMMatrixIdentity() = " << DirectX::XMMatrixIdentity();
+		const auto A44 = DirectX::XMMATRIX(1.0f, 0.0f, 1.0f, 2.0f,
+			-1.0f, 1.0f, 1.0f, 1.0f,
+			1.0f, -1.0f, 0.0f, 1.0f,
+			1.0f, 1.0f, -1.0f, -2.0f);
+		std::cout << "A44 = " << A44;
+		std::cout << "XMMatrixTranspose(A44) = " << DirectX::XMMatrixTranspose(A44);
+		auto A44Det = DirectX::XMMatrixDeterminant(A44);
+		std::cout << "XMMatrixDeterminant(A44) = " << A44Det.m128_f32[0] << std::endl;
+		const auto InvA44 = DirectX::XMMatrixInverse(&A44Det, A44);
+		std::cout << "XMMatrixInverse(A44Det, A44) = " << InvA44;
+		std::cout << "A44 * XMMatrixInverse(A44Det, A44) = " << A44 * InvA44;
+	}
 #pragma endregion //!< DXMATH
-
-    //std::cout << "Hello World!\n";
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
