@@ -105,6 +105,40 @@ int main()
 		std::cout << "inverse(A44) = " << InvB44;
 		std::cout << "inverse(A44) * A4 = " << InvB44 * A44;
 
+		const auto B44 = glm::mat4(5.0f, 2.0f, 6.0f, 1.0f,
+			0.0f, 6.0f, 2.0f, 0.0f,
+			3.0f, 8.0f, 1.0f, 4.0f,
+			1.0f, 8.0f, 5.0f, 6.0f);
+		const auto C44 = glm::mat4(7.0f, 5.0f, 8.0f, 0.0f,
+			1.0f, 8.0f, 2.0f, 6.0f,
+			9.0f, 4.0f, 3.0f, 8.0f,
+			5.0f, 3.0f, 7.0f, 9.0f);
+		std::cout << "B44 = " << B44 << std::endl;
+		std::cout << "C44 = " << C44 << std::endl;
+		std::cout << "B44 * C44 = " << B44 * C44 << std::endl;
+		std::cout << "C44 * B44 = " << C44 * B44 << std::endl;
+
+		const auto Radian = glm::radians(60.0f);
+		std::cout << "rotateX = " << glm::rotate(glm::mat4(1.0f), Radian, glm::vec3(1.0f, 0.0f, 0.0f));
+		std::cout << "rotateY = " << glm::rotate(glm::mat4(1.0f), Radian, glm::vec3(0.0f, 1.0f, 0.0f));
+		std::cout << "rotateZ = " << glm::rotate(glm::mat4(1.0f), Radian, glm::vec3(0.0f, 0.0f, 1.0f));
+		const auto Axis = glm::vec3(1.0f, 1.0f, 0.0f);
+		std::cout << "rotateAxis = " << glm::rotate(glm::mat4(1.0f), Radian, Axis);
+		
+		std::cout << "translate = " << glm::translate(glm::mat4(1.0f), glm::vec3(10.0f, 20.0f, 30.0f));
+		std::cout << "scale = " << glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 2.0f, 3.0f));
+		//glm::mat4_cast(quat);
+
+		const auto Fovy = 0.16f * glm::pi<float>();
+		const auto Aspect = 16.0f / 9.0f;
+		const auto Far = 100.0f, Near = 0.001f;
+		std::cout << "perspective = " << glm::perspective(Fovy, Aspect, Far, Near);
+		
+		const auto CamPos = glm::vec3(0.0f, 0.0f, 5.0f);
+		const auto CamTag = glm::vec3(0.0f);
+		const auto CamUp = glm::vec3(0.0f, 1.0f, 0.0f);
+		std::cout << "lookAtRH = " << glm::lookAtRH(CamPos, CamTag, CamUp);
+		std::cout << "lookAtLH = " << glm::lookAtLH(CamPos, CamTag, CamUp);
 	}
 #pragma endregion //!< GLM
 #endif //!< USE_GLM
@@ -189,6 +223,42 @@ int main()
 		const auto InvA44 = DirectX::XMMatrixInverse(&A44Det, A44);
 		std::cout << "XMMatrixInverse(A44Det, A44) = " << InvA44;
 		std::cout << "A44 * XMMatrixInverse(A44Det, A44) = " << A44 * InvA44;
+
+		const auto B44 = DirectX::XMMATRIX(5.0f, 2.0f, 6.0f, 1.0f,
+			0.0f, 6.0f, 2.0f, 0.0f,
+			3.0f, 8.0f, 1.0f, 4.0f,
+			1.0f, 8.0f, 5.0f, 6.0f);
+		const auto C44 = DirectX::XMMATRIX(7.0f, 5.0f, 8.0f, 0.0f,
+			1.0f, 8.0f, 2.0f, 6.0f,
+			9.0f, 4.0f, 3.0f, 8.0f,
+			5.0f, 3.0f, 7.0f, 9.0f);
+		std::cout << "B44 = " << B44 << std::endl;
+		std::cout << "C44 = " << C44 << std::endl;
+		std::cout << "B44 * C44 = " << B44 * C44 << std::endl;
+		std::cout << "C44 * B44 = " << C44 * B44 << std::endl;
+
+		const auto Radian = DirectX::XMConvertToRadians(60.0f);
+		std::cout << "XMMatrixRotationX = " << DirectX::XMMatrixRotationX(Radian);
+		std::cout << "XMMatrixRotationY = " << DirectX::XMMatrixRotationY(Radian);
+		std::cout << "XMMatrixRotationZ = " << DirectX::XMMatrixRotationZ(Radian);
+		const auto Axis = DirectX::XMVectorSet(1.0f, 1.0f, 0.0f, 0.0f);
+		std::cout << "XMMatrixRotationAxis = " << DirectX::XMMatrixRotationAxis(Axis, Radian);
+
+		std::cout << "XMMatrixTranslationFromVector = " << DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(10.0f, 20.0f, 30.0f, 1.0f));
+		std::cout << "XMMatrixScalingFromVector = " << DirectX::XMMatrixScalingFromVector(DirectX::XMVectorSet(1.0f, 2.0f, 3.0f, 0.0f));
+		//DirectX::XMMatrixRotationQuaternion();
+
+		const auto Fovy = 0.16f * DirectX::XM_PI;
+		const auto Aspect = 16.0f / 9.0f;
+		const auto Far = 100.0f, Near = 0.001f;
+		std::cout << "XMMatrixPerspectiveFovRH = " << DirectX::XMMatrixPerspectiveFovRH(Fovy, Aspect, Far, Near);
+		std::cout << "XMMatrixPerspectiveFovLH = " << DirectX::XMMatrixPerspectiveFovLH(Fovy, Aspect, Far, Near);
+
+		const auto CamPos = DirectX::XMVectorSet(0.0f, 0.0f, 5.0f, 1.0f);
+		const auto CamTag = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+		const auto CamUp = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+		std::cout << "XMMatrixLookAtRH = " << DirectX::XMMatrixLookAtRH(CamPos, CamTag, CamUp);
+		std::cout << "XMMatrixLookAtLH = " << DirectX::XMMatrixLookAtLH(CamPos, CamTag, CamUp);
 	}
 #pragma endregion //!< DXMATH
 }
