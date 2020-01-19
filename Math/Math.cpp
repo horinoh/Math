@@ -53,9 +53,6 @@ int main()
 		std::cout << "dot(A3, B3) = " << glm::dot(A3, B3) << std::endl;
 		std::cout << "cross(A3, B3) = " << glm::cross(A3, B3) << std::endl;
 
-		//!< クォータニオン (Quaternion)
-		std::cout << "[Quaternion]" << std::endl;
-
 		//!< マトリクス (Matrix) ... 乗算の順序がDirectXMathとは逆になる(Multiply order is different from DirectXMath)
 		//!< 22
 		std::cout << "[Matrix22]" << std::endl;
@@ -91,6 +88,16 @@ int main()
 		std::cout << "inverse(C33) = " << InvC33;
 		std::cout << "inverse(C33) * C33 = " << InvC33 * C33;
 
+		//!< クォータニオン (Quaternion)
+		const auto Radian = glm::radians(60.0f);
+		std::cout << "[Quaternion]" << std::endl;
+		//!< quat(w, x, y, z) の順なので注意
+		std::cout << "quat identity = " << glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+		//!< Pitch, Yaw, Roll
+		//glm::quat(glm::vec3(p, y, r));
+		//glm::rotate(glm::quat(1.0f, 0.0f, 0.0f, 0.0f), Radian, glm::vec3(1.0f, 0.0f, 0.0f)); //!< 軸はノーマライズしてくれる
+		//glm::conjugate(q);
+
 		//!< 44
 		std::cout << "[Matrix44]" << std::endl;
 		std::cout << "identity = " << glm::mat4(1.0f) << std::endl;
@@ -118,7 +125,6 @@ int main()
 		std::cout << "B44 * C44 = " << B44 * C44 << std::endl;
 		std::cout << "C44 * B44 = " << C44 * B44 << std::endl;
 
-		const auto Radian = glm::radians(60.0f);
 		std::cout << "rotateX = " << glm::rotate(glm::mat4(1.0f), Radian, glm::vec3(1.0f, 0.0f, 0.0f));
 		std::cout << "rotateY = " << glm::rotate(glm::mat4(1.0f), Radian, glm::vec3(0.0f, 1.0f, 0.0f));
 		std::cout << "rotateZ = " << glm::rotate(glm::mat4(1.0f), Radian, glm::vec3(0.0f, 0.0f, 1.0f));
@@ -156,9 +162,6 @@ int main()
 		std::cout << "A3 + B3 = " << DirectX::XMVectorAdd(A3, B3) << std::endl; //!< 加算オペレーターは無い？ (There is no + operator?)
 		std::cout << "XMVector3Dot(A3, B) = " << DirectX::XMVector3Dot(A3, B3).m128_f32[0] << std::endl;
 		std::cout << "XMVector3Cross(A3, B3) = " << DirectX::XMVector3Cross(A3, B3) << std::endl;
-
-		//!< クォータニオン (Quaternion)
-		std::cout << "[Quaternion]" << std::endl;
 
 		//!< マトリクス (Matrix) ... 乗算の順序がglmとは逆になる(Multiply order is different from glm)
 		//!< 22
@@ -209,6 +212,23 @@ int main()
 		//std::cout << "XMMatrixInverse(C33) = " << InvC33;
 		//std::cout << "C33 * XMMatrixInverse(C33) = " << C33 * InvC33;
 
+		//!< クォータニオン (Quaternion)
+		const auto Radian = DirectX::XMConvertToRadians(60.0f);
+		std::cout << "[Quaternion]" << std::endl;
+		std::cout << "XMQuaternionIdentity = " << DirectX::XMQuaternionIdentity();
+		//DirectX::XMQuaternionMultiply(q0, q1);
+
+		//DirectX::XMQuaternionRotationNormal(axis,ang);//!< 軸はノーマライズされていること
+		//DirectX::XMQuaternionRotationAxis(axis, ang);//!< 軸はノーマライズしてくれる
+		//DirectX::XMQuaternionToAxisAngle();
+
+		//DirectX::XMQuaternionConjugate(q);
+		//DirectX::XMQuaternionSlerp(q0, q1, t);
+
+		//!< Pitch, Yaw, Roll
+		//DirectX::XMQuaternionRotationRollPitchYaw(p, y, r);
+		//DirectX::XMQuaternionRotationRollPitchYawFromVector(XMVectorSet(p,y,r));
+
 		//!< 44
 		std::cout << "[Matrix44]" << std::endl;
 		std::cout << "XMMatrixIdentity() = " << DirectX::XMMatrixIdentity();
@@ -237,7 +257,6 @@ int main()
 		std::cout << "B44 * C44 = " << B44 * C44 << std::endl;
 		std::cout << "C44 * B44 = " << C44 * B44 << std::endl;
 
-		const auto Radian = DirectX::XMConvertToRadians(60.0f);
 		std::cout << "XMMatrixRotationX = " << DirectX::XMMatrixRotationX(Radian);
 		std::cout << "XMMatrixRotationY = " << DirectX::XMMatrixRotationY(Radian);
 		std::cout << "XMMatrixRotationZ = " << DirectX::XMMatrixRotationZ(Radian);
