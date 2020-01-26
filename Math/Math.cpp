@@ -153,9 +153,9 @@ int main()
 		const auto Fovy = 0.16f * glm::pi<float>();
 		const auto Aspect = 16.0f / 9.0f;
 		const auto Far = 100.0f, Near = 0.001f;
-		const auto ProjRH = glm::perspectiveRH(Fovy, Aspect, Far, Near);
+		const auto ProjRH = glm::perspectiveRH(Fovy, Aspect, Near, Far);
 		std::cout << "perspectiveRH = " << ProjRH;
-		const auto ProjLH = glm::perspectiveLH(Fovy, Aspect, Far, Near);
+		const auto ProjLH = glm::perspectiveLH(Fovy, Aspect, Near, Far);
 		std::cout << "perspectiveLH = " << ProjLH;
 
 		const auto CamPos = glm::vec3(0.0f, 0.0f, 5.0f);
@@ -168,7 +168,7 @@ int main()
 		S.x,			U.x,			-F.x[RH],		0,
 		S.y,			U.y,			-F.y[RH],		0,
 		S.z,			U.z,			-F.z[RH],		0,
-		-Dot(S,Pos),	-Dot(U,Pos),	-Dot(F,Pos),	0,
+		-Dot(S,Pos),	-Dot(U,Pos),	 Dot(F,Pos),	1,
 		*/
 		const auto ViewRH = glm::lookAtRH(CamPos, CamTag, CamUp);
 		std::cout << "lookAtRH = " << ViewRH;
@@ -179,7 +179,7 @@ int main()
 		S.x,			U.x,			F.x[LH],		0,
 		S.y,			U.y,			F.y[LH],		0,
 		S.z,			U.z,			F.z[LH],		0,
-		-Dot(S,Pos),	-Dot(U,Pos),	-Dot(F,Pos),	0,
+		-Dot(S,Pos),	-Dot(U,Pos),	-Dot(F,Pos),	1,
 		*/
 		const auto ViewLH = glm::lookAtLH(CamPos, CamTag, CamUp);
 		std::cout << "lookAtLH = " << ViewLH;
@@ -328,9 +328,9 @@ int main()
 		const auto Fovy = 0.16f * DirectX::XM_PI;
 		const auto Aspect = 16.0f / 9.0f;
 		const auto Far = 100.0f, Near = 0.001f;
-		const auto ProjRH = DirectX::XMMatrixPerspectiveFovRH(Fovy, Aspect, Far, Near);
+		const auto ProjRH = DirectX::XMMatrixPerspectiveFovRH(Fovy, Aspect, Near, Far);
 		std::cout << "XMMatrixPerspectiveFovRH = " << ProjRH;
-		const auto ProjLH = DirectX::XMMatrixPerspectiveFovLH(Fovy, Aspect, Far, Near);
+		const auto ProjLH = DirectX::XMMatrixPerspectiveFovLH(Fovy, Aspect, Near, Far);
 		std::cout << "XMMatrixPerspectiveFovLH = " << ProjLH;
 
 		const auto CamPos = DirectX::XMVectorSet(0.0f, 0.0f, 5.0f, 1.0f);
@@ -344,7 +344,7 @@ int main()
 		S.x,	S.y,	S.z,	Dot(S,-Pos),
 		U.x,	U.y,	U.z,	Dot(U,-Pos),
 		F.x,	F.y,	F.z,	Dot(F,-Pos),
-		0,		0,		0,		0,
+		0,		0,		0,		1,
 		)
 		*/
 		const auto ViewRH = DirectX::XMMatrixLookAtRH(CamPos, CamTag, CamUp);
@@ -357,7 +357,7 @@ int main()
 		S.x,	S.y,	S.z,	Dot(S,-Pos),
 		U.x,	U.y,	U.z,	Dot(U,-Pos),
 		F.x,	F.y,	F.z,	Dot(F,-Pos),
-		0,		0,		0,		0,
+		0,		0,		0,		1,
 		)
 		*/
 		const auto ViewLH = DirectX::XMMatrixLookAtLH(CamPos, CamTag, CamUp);
