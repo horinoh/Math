@@ -87,6 +87,14 @@ int main()
 		const auto InvC33 = glm::inverse(C33);
 		std::cout << "inverse(C33) = " << InvC33;
 		std::cout << "inverse(C33) * C33 = " << InvC33 * C33;
+		const auto D33 = glm::mat3(2.0f, 4.0f, 6.0f, 
+			3.0f, 1.0f, 5.0f, 
+			8.0f, 7.0f, 9.0f);
+		const auto D3 = glm::vec3(3.0f, 4.0f, 1.0f);
+		std::cout << "D33 = " << D33 << std::endl;
+		std::cout << "D3 = " << D3 << std::endl;
+		//std::cout << "D3 * D33 = " << D3 * D33 << std::endl;
+		std::cout << "D33 * D3 = " << D33 * D3 << std::endl;
 
 		//!< クォータニオン (Quaternion)
 		const auto Radian = glm::radians(60.0f);
@@ -111,7 +119,6 @@ int main()
 		const auto InvB44 = glm::inverse(A44);
 		std::cout << "inverse(A44) = " << InvB44;
 		std::cout << "inverse(A44) * A4 = " << InvB44 * A44;
-
 		const auto B44 = glm::mat4(5.0f, 2.0f, 6.0f, 1.0f,
 			0.0f, 6.0f, 2.0f, 0.0f,
 			3.0f, 8.0f, 1.0f, 4.0f,
@@ -124,6 +131,14 @@ int main()
 		std::cout << "C44 = " << C44 << std::endl;
 		std::cout << "B44 * C44 = " << B44 * C44 << std::endl;
 		std::cout << "C44 * B44 = " << C44 * B44 << std::endl;
+		const auto D44 = glm::mat4(2.0f, 3.0f, -4.0f, 2.0f,
+			4.0f, 1.0f, 4.0f, 5.0f,
+			2.0f, 5.0f, 3.0f, 1.0f,
+			1.0f, 6.0f, 2.0f, 3.0f);
+		const auto D4 = glm::vec4(3.0f, 2.0f, 5.0f, 1.0f);
+		std::cout << "D44 = " << D44 << std::endl;
+		std::cout << "D4 = " << D4 << std::endl;
+		std::cout << "D44 * D4 = " << D44 * D4 << std::endl;
 
 		std::cout << "rotateX = " << glm::rotate(glm::mat4(1.0f), Radian, glm::vec3(1.0f, 0.0f, 0.0f));
 		std::cout << "rotateY = " << glm::rotate(glm::mat4(1.0f), Radian, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -138,13 +153,41 @@ int main()
 		const auto Fovy = 0.16f * glm::pi<float>();
 		const auto Aspect = 16.0f / 9.0f;
 		const auto Far = 100.0f, Near = 0.001f;
-		std::cout << "perspective = " << glm::perspective(Fovy, Aspect, Far, Near);
-		
+		const auto ProjRH = glm::perspectiveRH(Fovy, Aspect, Far, Near);
+		std::cout << "perspectiveRH = " << ProjRH;
+		const auto ProjLH = glm::perspectiveLH(Fovy, Aspect, Far, Near);
+		std::cout << "perspectiveLH = " << ProjLH;
+
 		const auto CamPos = glm::vec3(0.0f, 0.0f, 5.0f);
 		const auto CamTag = glm::vec3(0.0f);
 		const auto CamUp = glm::vec3(0.0f, 1.0f, 0.0f);
-		std::cout << "lookAtRH = " << glm::lookAtRH(CamPos, CamTag, CamUp);
-		std::cout << "lookAtLH = " << glm::lookAtLH(CamPos, CamTag, CamUp);
+		/*
+		F=Norm(Tag-Pos)
+		S=Norm(Cross(F,Up)) [RH]
+		U=Cross(S,F) [RH]
+		S.x,			U.x,			-F.x[RH],		0,
+		S.y,			U.y,			-F.y[RH],		0,
+		S.z,			U.z,			-F.z[RH],		0,
+		-Dot(S,Pos),	-Dot(U,Pos),	-Dot(F,Pos),	0,
+		*/
+		const auto ViewRH = glm::lookAtRH(CamPos, CamTag, CamUp);
+		std::cout << "lookAtRH = " << ViewRH;
+		/*
+		F=Norm(Tag-Pos)
+		S=Norm(Cross(Up,F)) [LH]
+		U=Cross(F,S) [LH]
+		S.x,			U.x,			F.x[LH],		0,
+		S.y,			U.y,			F.y[LH],		0,
+		S.z,			U.z,			F.z[LH],		0,
+		-Dot(S,Pos),	-Dot(U,Pos),	-Dot(F,Pos),	0,
+		*/
+		const auto ViewLH = glm::lookAtLH(CamPos, CamTag, CamUp);
+		std::cout << "lookAtLH = " << ViewLH;
+
+		std::cout << "VP(RH)  = " << ViewRH * ProjRH;
+		std::cout << "PV(RH)  = " << ProjRH * ViewRH;
+		std::cout << "VP(LH)  = " << ViewLH * ProjLH;
+		std::cout << "PV(LH)  = " << ProjLH * ViewLH;
 	}
 #pragma endregion //!< GLM
 #endif //!< USE_GLM
@@ -211,6 +254,14 @@ int main()
 		//const auto InvC33 = DirectX::XMMatrixInverse(&C33Det, C33);
 		//std::cout << "XMMatrixInverse(C33) = " << InvC33;
 		//std::cout << "C33 * XMMatrixInverse(C33) = " << C33 * InvC33;
+		const auto D33 = DirectX::XMMATRIX(2.0f, 4.0f, 6.0f, 0.0f,
+			3.0f, 1.0f, 5.0f, 0.0f,
+			8.0f, 7.0f, 9.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 0.0f);
+		const auto D3 = DirectX::XMVectorSet(3.0f, 4.0f, 1.0f, 0.0f);
+		std::cout << "D33 = " << D33 << std::endl;
+		std::cout << "D3 = " << D3 << std::endl;
+		std::cout << "XMVector3Transform(D3, D33) = " << DirectX::XMVector3Transform(D3, D33) << std::endl;
 
 		//!< クォータニオン (Quaternion)
 		const auto Radian = DirectX::XMConvertToRadians(60.0f);
@@ -243,7 +294,6 @@ int main()
 		const auto InvA44 = DirectX::XMMatrixInverse(&A44Det, A44);
 		std::cout << "XMMatrixInverse(A44Det, A44) = " << InvA44;
 		std::cout << "A44 * XMMatrixInverse(A44Det, A44) = " << A44 * InvA44;
-
 		const auto B44 = DirectX::XMMATRIX(5.0f, 2.0f, 6.0f, 1.0f,
 			0.0f, 6.0f, 2.0f, 0.0f,
 			3.0f, 8.0f, 1.0f, 4.0f,
@@ -256,6 +306,14 @@ int main()
 		std::cout << "C44 = " << C44 << std::endl;
 		std::cout << "B44 * C44 = " << B44 * C44 << std::endl;
 		std::cout << "C44 * B44 = " << C44 * B44 << std::endl;
+		const auto D44 = DirectX::XMMATRIX(2.0f, 3.0f, -4.0f, 2.0f,
+			4.0f, 1.0f, 4.0f, 5.0f,
+			2.0f, 5.0f, 3.0f, 1.0f,
+			1.0f, 6.0f, 2.0f, 3.0f);
+		const auto D4 = DirectX::XMVectorSet(3.0f, 2.0f, 5.0f, 1.0f);
+		std::cout << "D44 = " << D44 << std::endl;
+		std::cout << "D4 = " << D4 << std::endl;
+		std::cout << "XMVector4Transform(D4, D44) = " << DirectX::XMVector4Transform(D4, D44) << std::endl;
 
 		std::cout << "XMMatrixRotationX = " << DirectX::XMMatrixRotationX(Radian);
 		std::cout << "XMMatrixRotationY = " << DirectX::XMMatrixRotationY(Radian);
@@ -270,14 +328,45 @@ int main()
 		const auto Fovy = 0.16f * DirectX::XM_PI;
 		const auto Aspect = 16.0f / 9.0f;
 		const auto Far = 100.0f, Near = 0.001f;
-		std::cout << "XMMatrixPerspectiveFovRH = " << DirectX::XMMatrixPerspectiveFovRH(Fovy, Aspect, Far, Near);
-		std::cout << "XMMatrixPerspectiveFovLH = " << DirectX::XMMatrixPerspectiveFovLH(Fovy, Aspect, Far, Near);
+		const auto ProjRH = DirectX::XMMatrixPerspectiveFovRH(Fovy, Aspect, Far, Near);
+		std::cout << "XMMatrixPerspectiveFovRH = " << ProjRH;
+		const auto ProjLH = DirectX::XMMatrixPerspectiveFovLH(Fovy, Aspect, Far, Near);
+		std::cout << "XMMatrixPerspectiveFovLH = " << ProjLH;
 
 		const auto CamPos = DirectX::XMVectorSet(0.0f, 0.0f, 5.0f, 1.0f);
 		const auto CamTag = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-		const auto CamUp = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-		std::cout << "XMMatrixLookAtRH = " << DirectX::XMMatrixLookAtRH(CamPos, CamTag, CamUp);
-		std::cout << "XMMatrixLookAtLH = " << DirectX::XMMatrixLookAtLH(CamPos, CamTag, CamUp);
+		const auto CamUp = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+		/*
+		F = Norm(Pos-Tag) <RH>
+		S = Norm(Cross(Up,F))
+		U = Cross(F,S)
+		Transpose(
+		S.x,	S.y,	S.z,	Dot(S,-Pos),
+		U.x,	U.y,	U.z,	Dot(U,-Pos),
+		F.x,	F.y,	F.z,	Dot(F,-Pos),
+		0,		0,		0,		0,
+		)
+		*/
+		const auto ViewRH = DirectX::XMMatrixLookAtRH(CamPos, CamTag, CamUp);
+		std::cout << "XMMatrixLookAtRH = " << ViewRH;
+		/*
+		F = Norm(Tag-Pos) <LH>
+		S = Norm(Cross(Up,F))
+		U = Cross(F,S)
+		Transpose(
+		S.x,	S.y,	S.z,	Dot(S,-Pos),
+		U.x,	U.y,	U.z,	Dot(U,-Pos),
+		F.x,	F.y,	F.z,	Dot(F,-Pos),
+		0,		0,		0,		0,
+		)
+		*/
+		const auto ViewLH = DirectX::XMMatrixLookAtLH(CamPos, CamTag, CamUp);
+		std::cout << "XMMatrixLookAtLH = " << ViewLH;
+
+		std::cout << "VP(RH)  = " << DirectX::XMMatrixMultiply(ViewRH, ProjRH);
+		std::cout << "PV(RH)  = " << DirectX::XMMatrixMultiply(ProjRH, ViewRH);
+		std::cout << "VP(LH)  = " << DirectX::XMMatrixMultiply(ViewLH, ProjLH);
+		std::cout << "PV(LH)  = " << DirectX::XMMatrixMultiply(ProjLH, ViewLH);
 	}
 #pragma endregion //!< DXMATH
 }
