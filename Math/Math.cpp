@@ -18,6 +18,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/quaternion.hpp>
 #pragma warning(pop)
 static std::ostream& operator<<(std::ostream& rhs, const glm::vec2& Value) { for (auto i = 0; i < Value.length(); ++i) { rhs << Value[i] << ", "; } rhs << std::endl; return rhs; }
 static std::ostream& operator<<(std::ostream& rhs, const glm::vec3& Value) { for (auto i = 0; i < Value.length(); ++i) { rhs << Value[i] << ", "; } rhs << std::endl; return rhs; }
@@ -101,10 +102,35 @@ int main()
 		std::cout << "[Quaternion]" << std::endl;
 		//!< quat(w, x, y, z) の順なので注意
 		std::cout << "quat identity = " << glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-		//!< Pitch, Yaw, Roll
-		//glm::quat(glm::vec3(p, y, r));
-		//glm::rotate(glm::quat(1.0f, 0.0f, 0.0f, 0.0f), Radian, glm::vec3(1.0f, 0.0f, 0.0f)); //!< 軸はノーマライズしてくれる
-		//glm::conjugate(q);
+		float Pitch = glm::radians(30.0f) , Yaw = glm::radians(45.0f), Roll = 0.0f;
+		const auto Aq = glm::quat(glm::vec3(Pitch, Yaw, Roll));
+		std::cout << "quat(Pitch=" << Pitch << ", Yaw=" << Yaw << ", Roll=" << Roll << ") = Aq = " << Aq;
+		std::cout << "conjugate(Aq) = " << glm::conjugate(Aq);
+		std::cout << "inverse(Aq) = " << glm::inverse(Aq);
+		std::cout << "Aq * inverse(Aq) = " << Aq * glm::inverse(Aq);
+		const auto Bq = glm::angleAxis(glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		std::cout << "Bq = angleAxis(radians(45), vec3(0, 1, 0)) = " << Bq;
+		std::cout << "angle(Bq) = " << glm::degrees(glm::angle(Bq)) << ", axis(Bq) = " << glm::axis(Bq);
+		std::cout << "rotate(Bq, vec3(1, 0, 0)) = " << glm::rotate(Bq, glm::vec3(1.0f, 0.0f, 0.0f));
+		//std::cout << "lerp(Aq, Bq, 0.5) = " << glm::lerp(Aq, Bq, 0.5f);
+		std::cout << "slerp(Aq, Bq, 0.5) = " << glm::slerp(Aq, Bq, 0.5f);
+		std::cout << "mix(Aq, Bq, 0.5) = " << glm::mix(Aq, Bq, 0.5f);
+		//!< 2ベクトルからのクォータニオン(ベクトルUをVにするような回転を表すクォータニオン)
+		/*
+			NUNV = Sqrt(Dot(U, U) * Dot(V, V))
+			RP = NUNV + Dot(U, V)
+			//!< U, Vが180度反対方向を向いているような場合
+			if(RP < EPSILON * NUNV){
+				AX = Abs(U.x) > Abs(U.z) ? { -U.y, U.x, 0 } : { 0, -U.z, U.y }
+				return Noramlize(0, AX.x, AX.y, AX.z)
+			}
+			else {
+				AX = Cross(U, V)
+				return Normalize(RP, AX.x, AX.y, AX.z)
+			}
+		*/
+		const auto Cq = glm::quat(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		std::cout << "quat({ 1, 0, 0 }, { 0, 1, 0}) = " << Cq;
 
 		//!< 44
 		std::cout << "[Matrix44]" << std::endl;
@@ -143,8 +169,8 @@ int main()
 		std::cout << "rotateX = " << glm::rotate(glm::mat4(1.0f), Radian, glm::vec3(1.0f, 0.0f, 0.0f));
 		std::cout << "rotateY = " << glm::rotate(glm::mat4(1.0f), Radian, glm::vec3(0.0f, 1.0f, 0.0f));
 		std::cout << "rotateZ = " << glm::rotate(glm::mat4(1.0f), Radian, glm::vec3(0.0f, 0.0f, 1.0f));
-		const auto Axis = glm::vec3(1.0f, 1.0f, 0.0f);
-		std::cout << "rotateAxis = " << glm::rotate(glm::mat4(1.0f), Radian, Axis);
+		const auto AxisM44 = glm::vec3(1.0f, 1.0f, 0.0f);
+		std::cout << "rotateAxis = " << glm::rotate(glm::mat4(1.0f), Radian, AxisM44);
 		
 		std::cout << "translate = " << glm::translate(glm::mat4(1.0f), glm::vec3(10.0f, 20.0f, 30.0f));
 		std::cout << "scale = " << glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 2.0f, 3.0f));
@@ -267,18 +293,23 @@ int main()
 		const auto Radian = DirectX::XMConvertToRadians(60.0f);
 		std::cout << "[Quaternion]" << std::endl;
 		std::cout << "XMQuaternionIdentity = " << DirectX::XMQuaternionIdentity();
-		//DirectX::XMQuaternionMultiply(q0, q1);
-
-		//DirectX::XMQuaternionRotationNormal(axis,ang);//!< 軸はノーマライズされていること
-		//DirectX::XMQuaternionRotationAxis(axis, ang);//!< 軸はノーマライズしてくれる
-		//DirectX::XMQuaternionToAxisAngle();
-
-		//DirectX::XMQuaternionConjugate(q);
-		//DirectX::XMQuaternionSlerp(q0, q1, t);
-
-		//!< Pitch, Yaw, Roll
-		//DirectX::XMQuaternionRotationRollPitchYaw(p, y, r);
-		//DirectX::XMQuaternionRotationRollPitchYawFromVector(XMVectorSet(p,y,r));
+		float Pitch = DirectX::XMConvertToRadians(30.0f), Yaw = DirectX::XMConvertToRadians(45.0f), Roll = 0.0f;
+		const auto Aq = DirectX::XMQuaternionRotationRollPitchYaw(Pitch, Yaw, Roll); //DirectX::XMQuaternionRotationRollPitchYawFromVector(XMVectorSet(Pitch, Yaw, Roll))もある
+		std::cout << "XMQuaternionRotationRollPitchYaw(Pitch=" << Pitch << ", Yaw=" << Yaw << ", Roll=" << Roll << ") = Aq = " << Aq;
+		std::cout << "XMQuaternionConjugate(Aq) = " << DirectX::XMQuaternionConjugate(Aq);
+		std::cout << "XMQuaternionInverse(Aq) = " << DirectX::XMQuaternionInverse(Aq);
+		std::cout << "XMQuaternionMultiply(Aq, XMQuaternionInverse(Aq)) = " << DirectX::XMQuaternionMultiply(Aq, DirectX::XMQuaternionInverse(Aq));
+		const auto Bq = DirectX::XMQuaternionRotationAxis(DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), DirectX::XMConvertToRadians(45.0f)); //XMQuaternionRotationNormalは軸をノーマライズしてくれる
+		std::cout << "Bq = XMQuaternionRotationAxis(XMConvertToRadians(45), XMVectorSet(0, 1, 0)) = " << Bq;
+		DirectX::XMVECTOR AxisQ;
+		float AngleQ;
+		DirectX::XMQuaternionToAxisAngle(&AxisQ, &AngleQ, Bq);
+		//!< 軸(Vector3)はノーマライズされていないので注意
+		std::cout << "XMQuaternionToAxisAngle(Axis, Angle, Bq) -> " << "Angle = " << DirectX::XMConvertToDegrees(AngleQ) << ", Axis = " << DirectX::XMVector3Normalize(AxisQ);
+		std::cout << "XMVector3Rotate(XMVectorSet(1, 0, 0), Bq) = " << DirectX::XMVector3Rotate(DirectX::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), Bq);
+		//std::cout << "XMVectorLerp(Aq, Bq, 0.5) = " << DirectX::XMVectorLerp(Aq, Bq, 0.5f);
+		std::cout << "XMQuaternionSlerp(Aq, Bq, 0.5) = " << DirectX::XMQuaternionSlerp(Aq, Bq, 0.5f);
+		//!< 2ベクトルからのクォータニオンは無い?
 
 		//!< 44
 		std::cout << "[Matrix44]" << std::endl;
@@ -318,8 +349,8 @@ int main()
 		std::cout << "XMMatrixRotationX = " << DirectX::XMMatrixRotationX(Radian);
 		std::cout << "XMMatrixRotationY = " << DirectX::XMMatrixRotationY(Radian);
 		std::cout << "XMMatrixRotationZ = " << DirectX::XMMatrixRotationZ(Radian);
-		const auto Axis = DirectX::XMVectorSet(1.0f, 1.0f, 0.0f, 0.0f);
-		std::cout << "XMMatrixRotationAxis = " << DirectX::XMMatrixRotationAxis(Axis, Radian);
+		const auto AxisM44 = DirectX::XMVectorSet(1.0f, 1.0f, 0.0f, 0.0f);
+		std::cout << "XMMatrixRotationAxis = " << DirectX::XMMatrixRotationAxis(AxisM44, Radian);
 
 		std::cout << "XMMatrixTranslationFromVector = " << DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(10.0f, 20.0f, 30.0f, 1.0f));
 		std::cout << "XMMatrixScalingFromVector = " << DirectX::XMMatrixScalingFromVector(DirectX::XMVectorSet(1.0f, 2.0f, 3.0f, 0.0f));
@@ -369,6 +400,31 @@ int main()
 		std::cout << "PV(LH)  = " << DirectX::XMMatrixMultiply(ProjLH, ViewLH);
 	}
 #pragma endregion //!< DXMATH
+	/*
+	Viewport(GL)
+	  W/2,	    0,	      0,	0,
+		0,	  H/2,	      0,	0,
+		0,	    0,	(F-N)/2,	0,
+	X+W/2,	Y+H/2,	(F+N)/2,	1,
+
+	Viewport(VK)
+	Clip = https://github.com/LunarG/VulkanSamples/commit/0dd36179880238014512c0637b0ba9f41febe803
+	1,  0,   0, 0,
+	0, -1,   0, 0,
+	0,	0, 1/2, 0,
+	0,  0, 1/2, 1,
+	Clip * Viewport(GL) = 
+	  W/2,	    0,	      0,	0,
+		0,	 -H/2,	      0,	0,
+		0,	    0,	(F-N)/4,	0,
+	X+W/2,	Y+H/2, (3F+N)/4,	1,
+
+	Viewport(DX) ... https://docs.microsoft.com/ja-jp/windows/uwp/graphics-concepts/viewports-and-clipping
+	  W/2,	    0,	  0,	0,
+		0,	 -H/2,	  0,	0,
+		0,	    0,	F-N,	0,
+	X+W/2,	Y+H/2,	  N,	1,
+	*/
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
